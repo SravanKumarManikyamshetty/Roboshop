@@ -10,6 +10,7 @@ if [ $# -lt 2 ]; then
 else
     if [ "$1" != "create" ] && [ "$1" != "delete" ]; then
         echo " first argu always either create or delete "
+        exit 1
     else
         echo " $1 "
     fi
