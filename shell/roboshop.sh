@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 
 
 AMI=ami-0220d79f3f480ecf5
