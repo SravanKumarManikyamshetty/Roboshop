@@ -1,6 +1,8 @@
 #!/bin/bash
 
 AMI_ID="ami-0220d79f3f480ecf5"
+ZONE_ID="Z06319852Q2KMY0JQH97T"
+DOMAIN_NAME="sravan.site"
 
 for instance in $@
 do
@@ -14,4 +16,43 @@ do
         --output text
     )
     echo "instance ID: $INSTANCE_ID"
+
+    #####ip for route53 update 
+    if [ $instance == "frontend" ];then
+        IP=(aws ec2 describe-instances \
+            --instance-ids $INSTANCE_ID \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --output text   )
+        RECORD_NAME="$instance.$DOMAIN_NAME"
+    else
+        IP=(aws ec2 describe-instances \
+            --instance-ids $INSTANCE_ID \
+            --query 'Reservations[*].Instances[*].PrivateIpAddress' \
+            --output text   )
+        RECORD_NAME="$instance.$DOMAIN_NAME"
+    fi
+
+    ######update in Route53
+    aws route53 change-resource-record-sets \
+    --hosted-zone-id ZONE_ID \
+    --change-batch '
+        {
+    "Comment": "Update A record IP",
+    "Changes": [
+        {
+            "Action": "UPSERT",
+            "ResourceRecordSet": {
+                "Name": "$RECORD_NAME",
+                "Type": "A",
+                "TTL": 1,
+                "ResourceRecords": [
+                    {
+                        "Value": "$IP"
+                    }
+                ]
+            }
+        }
+    ]
+}   
+    '
 done
