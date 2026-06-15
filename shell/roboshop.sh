@@ -12,6 +12,7 @@ do
         --output text   ) 
         if [ -n "$INSTANCE_ID"  ];then 
             echo " instance already created id is :- $INSTANCE_ID"
+            exit 1
         else
             echo "Launching instance: $instance"
             INSTANCE_ID=$(aws ec2 run-instances \
