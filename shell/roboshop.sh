@@ -1,15 +1,17 @@
 #!/bin/bash
 
+AMI_ID="ami-0220d79f3f480ecf5"
 
-AMI=ami-0220d79f3f480ecf5
-
-
-instanceid=(aws ec2 run-instances \
-    --image-id $AMI \
-    --instance-type t3.micro \
-    --security-group-ids "roboshop-common" "roboshop-$1" \
-    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=roboshop-$1}]" \
-    --query 'Instances[0].InstanceId' \
-    --output text
+for instance in $@
+do
+    echo "Launching instance: $instance"
+    INSTANCE_ID=$(aws ec2 run-instances \
+        --image-id $AMI_ID \
+        --instance-type t3.micro \
+        --security-groups "roboshop-common" "roboshop-$instance" \
+        --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=roboshop-$instance}]" \
+        --query 'Instances[0].InstanceId' \
+        --output text
     )
-    echo "Intance Id: $instanceid "
+    echo "instance ID: $INSTANCE_ID"
+done
