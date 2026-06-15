@@ -6,31 +6,34 @@ DOMAIN_NAME="sravan.site"
 
 for instance in $@
 do
-    INSTANCE_ID=(aws ec2 describe-instances \
-        --filters "Name=tag:Name,Values=roboshop-$instance" \
+        INSTANCE_ID=$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=roboshop-$instance" \
         --query "Reservations[].Instances[].InstanceId" \
         --output text   ) 
-        if [ "$INSTANCE_ID" == "none" ]
-    echo "Launching instance: $instance"
-    INSTANCE_ID=$(aws ec2 run-instances \
-        --image-id $AMI_ID \
-        --instance-type t3.micro \
-        --security-groups "roboshop-common" "roboshop-$instance" \
-        --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=roboshop-$instance}]" \
-        --query 'Instances[0].InstanceId' \
-        --output text
-    )
-    echo "instance ID: $INSTANCE_ID"
+        if [ -z "$INSTANCE_ID"  ];then 
+            echo " instance already created id is :- $INSTANCE_ID"
+        else
+            echo "Launching instance: $instance"
+            INSTANCE_ID=$(aws ec2 run-instances \
+                --image-id $AMI_ID \
+                --instance-type t3.micro \
+                --security-groups "roboshop-common" "roboshop-$instance" \
+                --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=roboshop-$instance}]" \
+                --query 'Instances[0].InstanceId' \
+                --output text
+            )
+            echo "instance ID: $INSTANCE_ID"
+        fi
 
     #####ip for route53 update 
     if [ $instance == "frontend" ];then
-        IP=(aws ec2 describe-instances \
+        IP=$(aws ec2 describe-instances \
             --instance-ids $INSTANCE_ID \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --output text   )
         RECORD_NAME="$instance.$DOMAIN_NAME"
     else
-        IP=(aws ec2 describe-instances \
+        IP=$(aws ec2 describe-instances \
             --instance-ids $INSTANCE_ID \
             --query 'Reservations[*].Instances[*].PrivateIpAddress' \
             --output text   )
@@ -39,7 +42,7 @@ do
 
     ######update in Route53
     aws route53 change-resource-record-sets \
-    --hosted-zone-id ZONE_ID \
+    --hosted-zone-id $ZONE_ID \
     --change-batch '
         {
     "Comment": "Update A record IP",
