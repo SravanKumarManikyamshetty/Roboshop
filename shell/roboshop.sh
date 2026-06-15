@@ -6,6 +6,11 @@ DOMAIN_NAME="sravan.site"
 
 for instance in $@
 do
+    INSTANCE_ID=(aws ec2 describe-instances \
+        --filters "Name=tag:Name,Values=roboshop-$instance" \
+        --query "Reservations[].Instances[].InstanceId" \
+        --output text   ) 
+        if [ "$INSTANCE_ID" == "none" ]
     echo "Launching instance: $instance"
     INSTANCE_ID=$(aws ec2 run-instances \
         --image-id $AMI_ID \
@@ -56,3 +61,4 @@ do
 }   
     '
 done
+  
