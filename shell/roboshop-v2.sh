@@ -75,7 +75,7 @@ else
                 
                     '
                     else
-                        if [ -n "$INSTANCE_ID"  ];then 
+                        if [ -z "$INSTANCE_ID"  ];then 
                             echo " instance already deleted."
                             else
                                 aws ec2 terminate-instances --instance-ids $INSTANCE_ID
