@@ -8,7 +8,7 @@ for instance in $@
 do
         INSTANCE_ID=$(aws ec2 describe-instances \
             --filters "Name=tag:Name,Values=roboshop-$instance" \
-        --query "Reservations[].Instances[].InstanceId" \
+        --query "Reservations[*].Instances[*].InstanceId" \
         --output text   ) 
         if [ -z "$INSTANCE_ID"  ];then 
             echo " instance already created id is :- $INSTANCE_ID"
