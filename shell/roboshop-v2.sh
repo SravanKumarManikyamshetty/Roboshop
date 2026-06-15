@@ -35,6 +35,8 @@ else
                                 --output text
                             )
                             echo "instance ID: $INSTANCE_ID"
+                            aws ec2 wait instance-running --instance-ids $INSTANCE_ID
+                            echo "Instance is now running..."
                     fi
                     #####ip for route53 update 
                     if [ $instance == "frontend" ];then
