@@ -21,7 +21,7 @@ else
                     --query "Reservations[*].Instances[*].InstanceId" \
                     --output text   ) 
 
-                if [ "ACTION" == "create" ];then
+                if [ "$ACTION" == "create" ];then
                     if [ -n "$INSTANCE_ID"  ];then 
                             echo " instance already created id is :- $INSTANCE_ID"
                         else
