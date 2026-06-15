@@ -10,7 +10,7 @@ do
             --filters "Name=tag:Name,Values=roboshop-$instance" \
         --query "Reservations[*].Instances[*].InstanceId" \
         --output text   ) 
-        if [ -z "$INSTANCE_ID"  ];then 
+        if [ -n "$INSTANCE_ID"  ];then 
             echo " instance already created id is :- $INSTANCE_ID"
         else
             echo "Launching instance: $instance"

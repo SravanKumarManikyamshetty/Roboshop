@@ -12,7 +12,34 @@ else
         echo " first argu always either create or delete "
         exit 1
     else
-        echo " $1 "
+       for instance in $@
+       do
+         INSTANCE_ID=$(aws ec2 describe-instances \
+                --filters "Name=tag:Name,Values=roboshop-$instance" \
+                --query "Reservations[*].Instances[*].InstanceId" \
+                --output text   ) 
+         if [ -n "$INSTANCE_ID"  ];then 
+            echo " instance already created id is :- $INSTANCE_ID"
+        else
+            echo "Launching instance: $instance"
+            INSTANCE_ID=$(aws ec2 run-instances \
+                --image-id $AMI_ID \
+                --instance-type t3.micro \
+                --security-groups "roboshop-common" "roboshop-$instance" \
+                --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=roboshop-$instance}]" \
+                --query 'Instances[0].InstanceId' \
+                --output text
+            )
+            echo "instance ID: $INSTANCE_ID"
+        fi
+       done
     fi
     echo " number of arguments $#"
 fi
+
+
+
+ INSTANCE_ID=$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=roboshop-$instance" \
+        --query "Reservations[*].Instances[*].InstanceId" \
+        --output text   ) 
