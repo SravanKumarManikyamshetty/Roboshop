@@ -82,9 +82,6 @@ else
                                 echo "Terminating Instance: $instance"
                         fi
                      fi
-        done
-
-       
+        done  
     fi
-    echo " number of arguments $#"
 fi
