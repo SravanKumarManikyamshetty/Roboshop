@@ -1,8 +1,13 @@
 - name: my first yaml program
   hosts: user 
   become: yes
-  tasks:
-    - name: Install Nginx
-      name: nginx
-      state: present
-      enabled: yes 
+  tasks: 
+    - name: ensure nginx is at the latest version
+      apt:
+        name: nginx
+        state: latest
+    - name: start nginx
+      service: 
+        name: nginx
+        state: started
+        enabled: yes
