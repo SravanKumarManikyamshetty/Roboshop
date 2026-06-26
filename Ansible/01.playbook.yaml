@@ -1,5 +1,8 @@
 - name: my first yaml program
   hosts: user
+  become: yes
   tasks:
-    - name: ping all nodes
-      ansible.builtin.ping:
+    - name: Install Nginx
+      name: nginx
+      state: present
+      enabled: yes 
