@@ -1,5 +1,5 @@
 - name: my first yaml program
-  hosts: nodes
+  hosts: user
   tasks:
     - name: ping all nodes
       ansible.builtin.ping:
