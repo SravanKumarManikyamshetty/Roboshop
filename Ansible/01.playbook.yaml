@@ -1,0 +1,8 @@
+- name: my first yaml program
+  hosts: nodes
+  connection:
+    ansible-user:ec2-user
+    ansible-password:DevOps321 
+  tasks:
+  - name:ping the nodes
+    ping:
