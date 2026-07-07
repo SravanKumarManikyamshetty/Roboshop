@@ -1,0 +1,9 @@
+- name: various methods of using vars
+  hosts: user
+  vars:
+    fullname: "Sravan"
+    age: 26
+    married: no
+  tasks:
+    debug:
+      msg: "hi, this is {{fullname}},im {{age}} old, married {{married}}"
