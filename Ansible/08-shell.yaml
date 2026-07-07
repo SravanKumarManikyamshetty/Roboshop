@@ -9,3 +9,4 @@
     - name: print info
       debug:
         msg: "{{user_output}}"
+      when user_output.rc == 0
