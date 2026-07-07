@@ -12,7 +12,7 @@
       when: user_output.rc == 1
     - name: Install nginx and git
       ansible.builtin.apt:
-        name:
+      name:
         - nginx
         - git
       state: present
