@@ -3,7 +3,7 @@
   vars:
     fullname: "Sravan"
     age: 26
-    married: no
+    married: false
   tasks:
     debug:
       msg: "hi, this is {{fullname}},im {{age}} old, married {{married}}"
