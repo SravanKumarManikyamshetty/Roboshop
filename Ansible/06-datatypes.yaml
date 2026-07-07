@@ -1,0 +1,23 @@
+- name: Datatypes in Ansible
+  hosts: user
+  connection: local
+  vars:
+    course: "DevOps"
+    duration_in_hrs: 150
+    is_live_session: Yes
+    topics:
+      - linux
+      - Ansible
+      - Terraform
+    more_details:
+      months: 5
+      trainer: "Siva Kumar"
+      age: 35
+  tasks:
+    - name: print info
+      debug:
+        msg: "course                      : {{course}}
+              duration of course is hours : {{duration_in_hrs}}
+              is it live session          : {{is_live_session}}
+              topics are                  : {{topics}}  
+              more detail about instruct  : {{more_details}}"
