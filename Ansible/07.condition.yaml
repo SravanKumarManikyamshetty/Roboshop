@@ -7,4 +7,4 @@
     - name: print info
       debug:
         msg: "given is less than 6"
-      when: num > 6
+      when: num < 6
