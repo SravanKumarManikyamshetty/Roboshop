@@ -1,0 +1,9 @@
+- name: variables declared in another file
+  hosts: user
+  connection: local
+  vars_files:
+    - course.yaml
+  tasks:
+    - name: print info  
+      debug:
+        msg: "Hi,i'm {{fullname}},i'm {{age}}old, married {{married}}"
