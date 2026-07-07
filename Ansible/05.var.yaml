@@ -1,0 +1,11 @@
+- name: variable declaration in live
+  hosts: user
+  connection: local
+  var_prompt:
+    - name: fullname
+      prompt: "please enter full name"
+      private: false
+  tasks:
+    - name: print info
+      debug:
+        msg: {{fullname}}
