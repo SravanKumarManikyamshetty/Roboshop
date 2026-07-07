@@ -8,4 +8,4 @@
   tasks:
     - name: print info
       debug:
-        msg: {{fullname}}
+        msg: "{{fullname}}"
