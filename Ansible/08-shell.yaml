@@ -4,7 +4,7 @@
   become: yes
   tasks:
     - name: command test
-      shell: cat/etc/passwd | grep root
+      shell: cat /etc/passwd | grep root
       register: user_output 
     - name: print info
       debug:
