@@ -1,7 +1,7 @@
 - name: variable declaration in live
   hosts: user
   connection: local
-  var_prompt:
+  vars_prompt:
     - name: fullname
       prompt: "please enter full name"
       private: false
