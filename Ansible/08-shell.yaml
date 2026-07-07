@@ -12,8 +12,8 @@
       when: user_output.rc == 1
     - name: Install nginx and git
       ansible.builtin.apt:
-      name:
-        - nginx
-        - git
-      state: present
-      update_cache: yes   
+        name:
+          - nginx
+          - git
+        state: present
+        update_cache: yes
