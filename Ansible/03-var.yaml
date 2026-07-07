@@ -5,9 +5,8 @@
     age: 26
     married: false
   tasks:
-    - name: vars in task
+    - name: print info 
       vars:
         fullname: "Mahesh Babu"
-    - name: print info 
       debug:
         msg: "hi, this is {{fullname}},im {{age}} old, married {{married}}"
