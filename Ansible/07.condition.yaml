@@ -2,9 +2,9 @@
   hosts: user
   connection: local
   vars:
-    number = 5
+    num: 5
   tasks:
     - name: print info
       debug:
         msg: "given is less than 6"
-      when: number > 6
+      when: num > 6
