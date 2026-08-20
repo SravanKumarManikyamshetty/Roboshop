@@ -1,0 +1,43 @@
+data "aws_ami" "joindevops" {
+  most_recent      = true
+  owners           = ["973714476881"]
+
+  filter {
+    name   = "name"
+    values = ["Redhat-9-DevOps-Practice"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+}
+
+data "aws_ssm_parameter" "mongodb_sg_id" {
+    name = "/${var.project}/${var.environment}/mongodb"
+}
+
+data "aws_ssm_parameter" "redditmq_sg_id" {
+    name = "/${var.project}/${var.environment}/redditmq"
+}
+data "aws_ssm_parameter" "redis_sg_id" {
+    name = "/${var.project}/${var.environment}/redis"
+}
+data "aws_ssm_parameter" "mysql_sg_id" {
+    name = "/${var.project}/${var.environment}/mysql"
+}
+
+data "aws_ssm_parameter" "database_subnet_id" {
+    name = "/${var.project}/${var.environment}/database_subnet_ids"
+}
+
