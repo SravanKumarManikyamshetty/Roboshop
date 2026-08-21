@@ -6,7 +6,20 @@ services:
     container_name: mongodb # docker run -d --network roboshop joindevops/mongodb:4.0.0
     volumes:
     - mongodb:/data/db # mongodb stores data in /data/db directory
-
+  catalogue:
+    build: ./catalogue
+    image: roboshop/catalogue
+    container_name: catalogue
+    depends_on:
+      - mongodb
+  frontend:
+    build: ./frontend
+    image: roboshop/frontend
+    container_name: frontend
+    ports:
+    - "80:80"
+    depends_on:
+    - catalogue
 
 networks:
   default: # this means all the services in this file use this network
