@@ -22,8 +22,7 @@ services:
     - user
     - catalogue
   redis:
-    build: redis:7
-    image: roboshop/redis
+    image: redis:7
     container_name: redis
   user:
     build: ./user
