@@ -15,4 +15,4 @@ networks:
     external: false # if true it should be created manually, if false docker creates this network
 
 volumes:
-mongodb: # docker volume create mongodb
+  mongodb: # docker volume create mongodb
