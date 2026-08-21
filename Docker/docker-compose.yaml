@@ -1,4 +1,4 @@
-name : roboshop
+name: roboshop
 services:
   mongodb:
     build: ./mongodb
