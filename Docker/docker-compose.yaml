@@ -38,6 +38,17 @@ services:
     depends_on:
       - redis
       - catalogue
+  mysql:
+    build: ./mysql
+    image: roboshop/mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: RoboShop@1
+  shipping:
+    build: ./shipping
+    image: roboshop/shipping
+    container_name: shipping
+    
   
 
 networks:
