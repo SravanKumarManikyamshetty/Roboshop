@@ -19,7 +19,27 @@ services:
     ports:
     - "80:80"
     depends_on:
+    - user
     - catalogue
+  redis:
+    build: redis:7
+    image: roboshop/redis
+    container_name: redis
+  user:
+    build: ./user
+    image: roboshop/user
+    container_name: user
+    depends_on:
+      - redis
+      - mongo
+  cart:
+    build: ./cart
+    image: roboshop/cart
+    container_name: cart
+    depends_on:
+      - redis
+      - catalogue
+  
 
 networks:
   default: # this means all the services in this file use this network
