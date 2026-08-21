@@ -1,3 +1,3 @@
 FROM mongo:7.0
 WORKDIR /app
-COPY *.js .
+COPY *.js /docker-entrypoint-initdb.d/
