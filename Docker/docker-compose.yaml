@@ -21,6 +21,9 @@ services:
     depends_on:
     - user
     - catalogue
+    - payment
+    - shipping
+    - cart
   redis:
     image: redis:7
     container_name: redis
@@ -48,9 +51,26 @@ services:
     build: ./shipping
     image: roboshop/shipping
     container_name: shipping
-    
-  
+    depends_on:
+      - mysql
+      - cart
 
+  rabbitmq:
+    image: rabbitmq:3
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=roboshop
+      - RABBITMQ_DEFAULT_PASS=roboshop123 
+  
+  payment:
+    build: ./payment
+    image: roboshop/payment
+    container_name: payment
+    depends_on:
+      - rabbitmq
+      - user
+      - cart
+    
 networks:
   default: # this means all the services in this file use this network
     name: roboshop

@@ -5,6 +5,6 @@ COPY *.js .
 RUN npm install
 EXPOSE 8080
 ENV MONGO="true" \
-    MONGO_URL="mongodb://mongodb:27017/catalogue" \
+    MONGO_URL="mongodb://mongodb:27017/user" \
     REDIS_URL="redis://redis:6379"
 CMD ["node", "server.js"]
