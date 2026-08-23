@@ -27,6 +27,8 @@ services:
   redis:
     image: redis:7
     container_name: redis
+    volumes:
+      -redis:/data
   user:
     build: ./user
     image: roboshop/user
@@ -47,6 +49,8 @@ services:
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: RoboShop@1
+    volumes:
+      -mysql:/var/lib/mysql
   shipping:
     build: ./shipping
     image: roboshop/shipping
@@ -64,6 +68,8 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=roboshop
       - RABBITMQ_DEFAULT_PASS=roboshop123 
+    volumes:
+      -rabbitmq:/var/lib/rabbitmq
   
   payment:
     build: ./payment
@@ -82,3 +88,6 @@ networks:
 
 volumes:
   mongodb: # docker volume create mongodb
+  redis:
+  mysql:
+  rabbitmq:
