@@ -10,6 +10,9 @@ services:
     build: ./catalogue
     image: roboshop/catalogue
     container_name: catalogue
+    environment:
+      - MONGO: "true" 
+      - MONGO_URL: "mongodb://mongodb:27017/catalogue"
     depends_on:
       - mongodb
   frontend:
@@ -33,6 +36,10 @@ services:
     build: ./user
     image: roboshop/user
     container_name: user
+    environment:
+      - MONGO : "true" 
+      - MONGO_URL: "mongodb://mongodb:27017/user" 
+      - REDIS_URL: "redis://redis:6379"
     depends_on:
       - redis
       - mongodb
