@@ -1,4 +1,4 @@
-FROM maven:3.5
+FROM maven:3.5-slim
 WORKDIR /app
 COPY pom.xml .
 COPY src/ ./src
