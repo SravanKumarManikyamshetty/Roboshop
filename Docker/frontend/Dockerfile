@@ -5,4 +5,4 @@ RUN rm -rf /etc/nginx/conf.d/default.conf
 COPY web/ /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 8080
-USER nginx
+
