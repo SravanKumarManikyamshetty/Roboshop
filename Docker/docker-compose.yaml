@@ -28,7 +28,7 @@ services:
     image: redis:7
     container_name: redis
     volumes:
-      -redis:/data
+      - redis:/data
   user:
     build: ./user
     image: roboshop/user
@@ -50,7 +50,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: RoboShop@1
     volumes:
-      -mysql:/var/lib/mysql
+      - mysql:/var/lib/mysql
   shipping:
     build: ./shipping
     image: roboshop/shipping
