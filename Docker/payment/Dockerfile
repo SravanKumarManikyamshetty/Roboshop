@@ -6,5 +6,5 @@ COPY app/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY app/ .
 RUN chown -R roboshop:roboshop /app
-CMD ["uwsgi", "--ini", "payment.ini"]
 USER roboshop
+CMD ["uwsgi", "--ini", "payment.ini"]
