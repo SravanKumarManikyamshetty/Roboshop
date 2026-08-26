@@ -2,10 +2,10 @@ name: roboshop
 services:
   mongodb:
     build: ./mongodb
-    image: sravan9661/roboshop-mongodb:4.0.0 # docker build -t joindevops/mongodb:4.0.0
-    container_name: mongodb # docker run -d --network roboshop joindevops/mongodb:4.0.0
+    image: sravan9661/roboshop-mongodb:4.0.0 
+    container_name: mongodb 
     volumes:
-    - mongodb:/data/db # mongodb stores data in /data/db directory
+    - mongodb:/data/db 
   catalogue:
     build: ./catalogue
     image: sravan9661/roboshop-catalogue:4.0.0
@@ -100,11 +100,10 @@ services:
       - cart
     
 networks:
-  default: # this means all the services in this file use this network
+  default: 
     name: roboshop
     driver: bridge
-    external: false # if true it should be created manually, if false docker creates this network
-
+    external: false 
 volumes:
   mongodb: # docker volume create mongodb
   redis:
