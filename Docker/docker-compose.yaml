@@ -105,7 +105,7 @@ networks:
     driver: bridge
     external: false 
 volumes:
-  mongodb: # docker volume create mongodb
+  mongodb: 
   redis:
   mysql:
   rabbitmq:
