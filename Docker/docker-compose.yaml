@@ -2,13 +2,13 @@ name: roboshop
 services:
   mongodb:
     build: ./mongodb
-    image: sravan9661/roboshop/mongodb:4.0.0 # docker build -t joindevops/mongodb:4.0.0
+    image: sravan9661/roboshop-mongodb:4.0.0 # docker build -t joindevops/mongodb:4.0.0
     container_name: mongodb # docker run -d --network roboshop joindevops/mongodb:4.0.0
     volumes:
     - mongodb:/data/db # mongodb stores data in /data/db directory
   catalogue:
     build: ./catalogue
-    image: sravan9661/roboshop/catalogue:4.0.0
+    image: sravan9661/roboshop-catalogue:4.0.0
     container_name: catalogue
     environment:
       MONGO: "true" 
@@ -17,7 +17,7 @@ services:
       - mongodb
   frontend:
     build: ./frontend
-    image: sravan9661/roboshop/frontend:4.0.0
+    image: sravan9661/roboshop-frontend:4.0.0
     container_name: frontend
     ports:
     - "80:80"
@@ -34,7 +34,7 @@ services:
       - redis:/data
   user:
     build: ./user
-    image: sravan9661/roboshop/user:4.0.0
+    image: sravan9661/roboshop-user:4.0.0
     container_name: user
     environment:
       MONGO : "true" 
@@ -45,7 +45,7 @@ services:
       - mongodb
   cart:
     build: ./cart
-    image: sravan9661/roboshop/cart:4.0.0
+    image: sravan9661/roboshop-cart:4.0.0
     container_name: cart
     environment:
       REDIS_HOST: redis 
@@ -56,7 +56,7 @@ services:
       - catalogue
   mysql:
     build: ./mysql
-    image: sravan9661/roboshop/mysql:4.0.0
+    image: sravan9661/roboshop-mysql:4.0.0
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: RoboShop@1
@@ -64,7 +64,7 @@ services:
       - mysql:/var/lib/mysql
   shipping:
     build: ./shipping
-    image: sravan9661/roboshop/shipping:4.0.0
+    image: sravan9661/roboshop-shipping:4.0.0
     container_name: shipping
     environment:
       - CART_ENDPOINT=cart:8080
@@ -84,7 +84,7 @@ services:
   
   payment:
     build: ./payment
-    image: sravan9661/roboshop/payment:4.0.0
+    image: sravan9661/roboshop-payment:4.0.0
     container_name: payment
     environment:
       CART_HOST: cart
