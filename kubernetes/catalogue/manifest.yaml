@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalogue
+  namespace: roboshop
+  labels:
+    project:  roboshop
+    environment: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project:  roboshop
+      environment: dev
+      tier: backend
+      component: catalogue
+  template:
+    metadata:
+      labels:
+        project:  roboshop
+        environment: dev
+        tier: backend
+        component: catalogue
+    spec:
+      containers:
+        - name: catalogue
+          image: sravan9661/roboshop-catalogue:4.0.0
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          env:
+            - name: "MONGO"
+              value: "true"
+            - name: "MONGO_URL"
+              value:  "mongodb://mongodb:27017/catalogue"
+            # startup probe
+          startupProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 30
+          # liveness probe
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            periodSeconds: 15
+            timeoutSeconds: 2
+            failureThreshold: 3
+          # Readiness Probe
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 2
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: catalogue-horizontalscaling
+  namespace: roboshop
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: catalogue # Must match the Deployment name exactly
+  minReplicas: 1   # Minimum number of pods to keep running
+  maxReplicas: 10  # Maximum number of pods allowed during high load
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalogue
+  namespace: roboshop
+  labels:
+    project:  roboshop
+    environment: dev
+spec:
+  selector:
+    project:  roboshop
+    environment: dev
+    tier: backend
+    component: catalogue
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

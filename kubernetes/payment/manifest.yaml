@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: payment
+  namespace: roboshop
+data:
+  CART_HOST: "cart"
+  CART_PORT: "8080"
+  USER_HOST: "user"
+  USER_PORT: "8080"
+  AMQP_HOST: "rabbitmq"
+  AMQP_USER: "roboshop"
+  
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secretmapV
+type: Opaque
+data:
+  AMQP_PASS: cm9ib3Nob3AxMjM=
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment
+  namespace: roboshop
+  labels:
+    project:  roboshop
+    environment: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project:  roboshop
+      environment: dev
+      tier: backend
+      component: payment
+  template:
+    metadata:
+      labels:
+        project:  roboshop
+        environment: dev
+        tier: backend
+        component: payment
+    spec:
+      containers:
+        - name: payment
+          image: sravan9661/roboshop-payment:4.0.0
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          envFrom:
+            - configMapRef:
+                name: payment
+            - secretRef:
+                name: secretmapV
+          startupProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 30
+          # liveness probe
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            periodSeconds: 15
+            timeoutSeconds: 2
+            failureThreshold: 3
+          # Readiness Probe
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 2
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: payment-horizontalscaling
+  namespace: roboshop
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: payment # Must match the Deployment name exactly
+  minReplicas: 1   # Minimum number of pods to keep running
+  maxReplicas: 10  # Maximum number of pods allowed during high load
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70      
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment
+  namespace: roboshop
+  labels:
+    project:  roboshop
+    environment: dev
+spec:
+  selector:
+    project:  roboshop
+    environment: dev
+    tier: backend
+    component: payment
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

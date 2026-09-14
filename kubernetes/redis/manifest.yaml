@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-headless
+  namespace: roboshop
+  labels:
+    project: Roboshop
+    tier: db
+    component: redis
+    service:  headlessservice
+spec:
+  selector:
+    project: Roboshop
+    tier: db
+    component: redis 
+  ports:
+  - port: 6379 
+    name: redisHeadlessServicePort
+  clusterIP: None 
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: 
+  name: redis-statefulset
+  namespace: roboshop
+  labels:
+    project: Roboshop
+    tier: db
+    component: redis
+    service:  statefulset
+spec:
+  selector:
+    matchLabels:
+      project: Roboshop
+      tier: db
+      component: redis
+  serviceName:   redis-headless
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        project: Roboshop
+        tier: db
+        component: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7
+          resources:
+            requests:
+              cpu: 250m
+              memory: 250Mi
+            limits:
+              cpu: 1
+              memory:  1Gi
+          ports:
+            - containerPort: 6379 
+              name: rediscontainerport
+          volumeMounts:
+            - name: redis-volume
+              mountPath:  /data 
+          # startup probe
+          startupProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 30
+          # liveness probe
+          livenessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            periodSeconds: 15
+            timeoutSeconds: 2
+            failureThreshold: 3
+          # Readiness Probe
+          readinessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 2
+
+  # Volume template
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-volume
+        namespace: roboshop
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "ebs-gp3-sc" 
+        resources:
+          requests:
+            storage: 1Gi
+        
+
+      

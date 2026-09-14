@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-headless
+  namespace: roboshop
+  labels:
+    project: Roboshop
+    tier: db
+    component: mongodb
+    service:  headlessservice
+spec:
+  selector:
+    project: Roboshop
+    tier: db
+    component: mongodb 
+  ports:
+  - port: 27017
+    name: mongodbHeadlessServicePort
+  clusterIP: None 
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: 
+  name: mongodb-statefulset
+  namespace: roboshop
+  labels:
+    project: Roboshop
+    tier: db
+    component: mongodb
+    service:  statefulset
+spec:
+  selector:
+    matchLabels:
+      project: Roboshop
+      tier: db
+      component: mongodb
+  serviceName:   mongodb-headless
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        project: Roboshop
+        tier: db
+        component: mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: sravan9661/roboshop-mongodb:4.0.0
+          resources:
+            requests:
+              cpu: 250m
+              memory: 250Mi
+            limits:
+              cpu: 1
+              memory:  1Gi
+          ports:
+            - containerPort: 27017
+              name: mongodbcontainerport
+          volumeMounts:
+            - name: mongodb-volume
+              mountPath:  /data/db 
+          # startup probe
+          startupProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 30
+          # liveness probe
+          livenessProbe:
+            exec:
+              command:
+                - mongosh
+                - --eval
+                - "db.adminCommand('ping')"
+            periodSeconds: 15
+            timeoutSeconds: 2
+            failureThreshold: 3
+          # Readiness Probe
+          readinessProbe:
+            exec:
+              command:
+                - mongosh
+                - --eval
+                - "db.adminCommand('ping')"
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 2
+
+  # Volume template
+  volumeClaimTemplates:
+    - metadata:
+        name: mongodb-volume
+        namespace: roboshop
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "ebs-gp3-sc" 
+        resources:
+          requests:
+            storage: 1Gi
+        
+
+      
